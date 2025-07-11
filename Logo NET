@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>شبكة NET</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #2196F3, #FF9800);
+      background-size: 300% 300%;
+      animation: bgMove 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .container, .table-page {
+      width: 100%;
+      max-width: 450px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    .hidden { display: none; }
+    .svg-img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 100px;
+    }
+    h2 { text-align: center; margin-bottom: 20px; color: #333; }
+    .input-group { position: relative; margin-bottom: 20px; }
+    .input-group input {
+      width: 100%; padding: 12px 40px 12px 12px;
+      border: 1px solid #ccc; border-radius: 8px; font-size: 16px;
+    }
+    .toggle-btn {
+      position: absolute; left: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: transparent; border: none;
+      cursor: pointer; font-size: 18px;
+    }
+    .btn {
+      width: 100%; padding: 12px;
+      background: linear-gradient(90deg, #2196F3, #FF9800);
+      color: white; border: none;
+      border-radius: 8px; font-size: 16px;
+      cursor: pointer; margin-top: 10px;
+    }
+    .contact-info {
+      margin-top: 20px; text-align: center;
+      font-size: 15px; font-weight: bold;
+    }
+    .number { direction: ltr; unicode-bidi: bidi-override; }
+    .orange { color: #FF9800; }
+    .blue { color: #2196F3; }
+    .custom-alert {
+      position: fixed; top: 20px; right: 20px;
+      background: linear-gradient(90deg, #2196F3, #FF9800);
+      color: white; padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      font-size: 15px; font-weight: bold;
+      z-index: 9999;
+      animation: fadeSlideIn 0.5s ease forwards;
+    }
+    .custom-alert.hidden { display: none; }
+    .floating-signature {
+      position: fixed; bottom: 10px; left: 10px;
+      background: #FF9800; color: white;
+      padding: 6px 14px; border-radius: 20px;
+      font-weight: bold; font-size: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 999; user-select: none;
+      pointer-events: none;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .table-page {
+      display: none;
+      animation: fadeSlideIn 0.5s ease;
+    }
+    .table-page h2 { color: #FF9800; text-align: center; }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 20px;
+    }
+    th, td {
+      padding: 12px; border: 1px solid #ccc;
+      text-align: right; font-size: 14px;
+    }
+    th { background-color: #2196F3; color: white; }
+    .logout-btn {
+      margin-top: 20px; width: 100%;
+      padding: 10px; border: none;
+      background: #f44336; color: white;
+      border-radius: 8px; font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <!-- صفحة تسجيل الدخول -->
+  <div class="container" id="loginPage">
+    <svg class="svg-img" viewBox="0 0 64 64" fill="#2196f3">
+      <circle cx="32" cy="32" r="30" stroke="#FF9800" stroke-width="4" fill="#2196F3"/>
+      <circle cx="32" cy="25" r="8" fill="#fff"/>
+      <path d="M16 50c3-8 29-8 32 0" fill="#fff"/>
+    </svg>
+    <h2>مرحباً بك في شبكة NET</h2>
+    <div class="input-group">
+      <input type="text" placeholder="رقم البطاقة" id="cardInput" />
+      <button class="toggle-btn" onclick="togglePassword()">👁</button>
+    </div>
+    <button class="btn" onclick="loginUser()">دخول</button>
+    <div class="contact-info">
+      للتواصل مع حمزة:
+      <div class="number"><span class="orange">0599</span><span class="blue">-825894</span></div>
+    </div>
+  </div>  <!-- صفحة الجدول -->  <div class="table-page" id="tablePage">
+    <h2 id="welcomeMsg">مرحباً</h2>
+    <table>
+      <tr><th>البيان</th><th>القيمة</th></tr>
+      <tr><td>⏳ الوقت المتبقي</td><td id="countdown">--</td></tr>
+      <tr><td>📶 الإنترنت المستهلك</td><td>500 ميجابايت</td></tr>
+      <tr><td>🕓 تاريخ التسجيل</td><td id="registerDate">--</td></tr>
+    </table>
+    <button class="logout-btn" onclick="logoutUser()">🚪 تسجيل الخروج</button>
+  </div>  <!-- التنبيه -->  <div id="customAlert" class="custom-alert hidden"></div>
+  <div class="floating-signature">برمجة وتطوير: حسن مازن اللوح</div>  <script>
+    function togglePassword() {
+      const input = document.getElementById("cardInput");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    function showCustomAlert(message) {
+      const alert = document.getElementById("customAlert");
+      alert.textContent = message;
+      alert.classList.remove("hidden");
+      setTimeout(() => alert.classList.add("hidden"), 4000);
+    }
+
+    function loginUser() {
+      const cardNumber = document.getElementById("cardInput").value.trim();
+      if (!/^\d{1,9}$/.test(cardNumber)) return showCustomAlert("❌ رقم البطاقة غير صالح");
+
+      fetch("verify_card.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "card=" + encodeURIComponent(cardNumber)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          const now = new Date();
+          const expiry = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+          localStorage.setItem("user", cardNumber);
+          localStorage.setItem("registerDate", now.toISOString());
+          localStorage.setItem("expiry", expiry.toISOString());
+          showCustomAlert("✅ تم تسجيل الدخول بنجاح");
+          setTimeout(() => {
+            document.getElementById("loginPage").style.display = "none";
+            loadTable();
+            document.getElementById("tablePage").style.display = "block";
+          }, 1500);
+        } else {
+          showCustomAlert(data.message);
+        }
+      })
+      .catch(() => showCustomAlert("❌ خطأ في الاتصال بالسيرفر"));
+    }
+
+    function loadTable() {
+      const user = localStorage.getItem("user") || "";
+      const registerDate = new Date(localStorage.getItem("registerDate"));
+      const expiryDate = new Date(localStorage.getItem("expiry"));
+
+      document.getElementById("welcomeMsg").textContent = "مرحباً بالبطاقة: " + user;
+      document.getElementById("registerDate").textContent = registerDate.toLocaleString();
+
+      function updateCountdown() {
+        const now = new Date();
+        let diff = expiryDate - now;
+        if (diff <= 0) {
+          document.getElementById("countdown").textContent = "انتهت البطاقة";
+          return;
+        }
+        const hrs = Math.floor(diff / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        document.getElementById("countdown").textContent = `${hrs} س ${mins} د ${secs} ث`;
+        setTimeout(updateCountdown, 1000);
+      }
+
+      updateCountdown();
+    }
+
+    function logoutUser() {
+      localStorage.clear();
+      document.getElementById("tablePage").style.display = "none";
+      document.getElementById("loginPage").style.display = "block";
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("user")) {
+        document.getElementById("loginPage").style.display = "none";
+        loadTable();
+        document.getElementById("tablePage").style.display = "block";
+      }
+    };
+  </script></body>
+</html>
